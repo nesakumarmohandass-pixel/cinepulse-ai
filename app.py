@@ -1,7 +1,6 @@
 """
-CinePulse AI - World-Class Hollywood Studio Operating System (Grand Master Edition)
-Agentic Cinema: The Blockbuster Hackathon
-Google Cloud (Gemini) + ClickHouse Cloud Ultra-Fast Intelligence Platform
+CinePulse OS - World-Class Hollywood Studio Operating System
+Enterprise Agentic Control Room powered by Google Gemini 2.5 & ClickHouse Cloud
 """
 
 import os
@@ -17,202 +16,226 @@ load_dotenv()
 from database.clickhouse_manager import db_manager
 from agents.director_agent import cinepulse_agent
 
-# Page Configuration
+# ----------------- PAGE CONFIG -----------------
 st.set_page_config(
-    page_title="CinePulse AI | Autonomous Studio Intelligence",
+    page_title="CinePulse OS | Autonomous Studio Intelligence",
     page_icon="🎬",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# ----------------- ELITE WORLD-CLASS CINEMATIC STYLING -----------------
+# ----------------- DESIGN TOKENS & CYBER-PUNK MINIMALISM CSS -----------------
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
     
     :root {
-        --bg-main: #060913;
-        --bg-card: rgba(15, 23, 42, 0.75);
-        --border-card: rgba(255, 255, 255, 0.08);
-        --accent-gold: #F59E0B;
-        --accent-cyan: #06B6D4;
-        --accent-purple: #8B5CF6;
-        --accent-emerald: #10B981;
-        --accent-rose: #F43F5E;
+        --bg-pitch: #000000;
+        --bg-obsidian: rgba(11, 15, 25, 0.7);
+        --border-subtle: #1E293B;
+        --electric-amber: #FF9F0A;
+        --neon-cyan: #0AFFF0;
+        --emerald-mint: #00E676;
+        --ruby-coral: #FF3B30;
     }
     
     .stApp {
-        background: radial-gradient(circle at 50% 0%, #111827 0%, #060913 75%, #030712 100%);
-        color: #F3F4F6;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg-pitch);
+        color: #F8FAFC;
+        font-family: 'Inter', sans-serif;
     }
     
-    /* Hero Studio Billboard */
-    .studio-hero {
+    /* Billboard Header */
+    .hero-billboard {
         position: relative;
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 60%, rgba(6, 9, 19, 0.95) 100%);
-        border: 1px solid rgba(245, 158, 11, 0.25);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(11, 15, 25, 0.95) 100%);
+        border: 1px solid var(--border-subtle);
         border-radius: 20px;
         padding: 30px 36px;
         margin-bottom: 24px;
         backdrop-filter: blur(20px);
-        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(245, 158, 11, 0.1);
-        overflow: hidden;
+        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 159, 10, 0.08);
     }
     
-    .studio-hero::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 350px;
-        height: 350px;
-        background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%);
-        filter: blur(40px);
-        pointer-events: none;
-    }
-    
-    .studio-title {
+    .hero-title {
         font-family: 'Cinzel', serif;
-        font-size: 2.7rem;
+        font-size: 2.8rem;
         font-weight: 900;
         letter-spacing: -0.5px;
-        background: linear-gradient(90deg, #FDE68A 0%, #F59E0B 40%, #D97706 70%, #06B6D4 100%);
+        background: linear-gradient(90deg, #FFFFFF 0%, #FF9F0A 40%, #0AFFF0 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin: 0;
-        text-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
     }
     
-    .studio-tagline {
+    .hero-tagline {
         color: #94A3B8;
         font-size: 1.05rem;
-        font-weight: 400;
         margin-top: 6px;
-        letter-spacing: 0.2px;
+        font-family: 'Inter', sans-serif;
     }
     
-    /* Live Status Pills */
-    .status-badge {
+    /* Capsule Badges */
+    .capsule-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
         padding: 6px 14px;
         border-radius: 100px;
-        font-size: 0.8rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
         font-weight: 700;
-        letter-spacing: 0.4px;
         text-transform: uppercase;
         margin-left: 8px;
     }
     
-    .badge-gemini {
-        background: rgba(59, 130, 246, 0.12);
-        color: #93C5FD;
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+    .capsule-amber {
+        background: rgba(255, 159, 10, 0.12);
+        color: #FF9F0A;
+        border: 1px solid rgba(255, 159, 10, 0.35);
+        box-shadow: 0 0 15px rgba(255, 159, 10, 0.2);
     }
     
-    .badge-clickhouse {
-        background: rgba(245, 158, 11, 0.12);
-        color: #FCD34D;
-        border: 1px solid rgba(245, 158, 11, 0.35);
-        box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    .capsule-cyan {
+        background: rgba(10, 255, 240, 0.1);
+        color: #0AFFF0;
+        border: 1px solid rgba(10, 255, 240, 0.3);
+        box-shadow: 0 0 15px rgba(10, 255, 240, 0.2);
     }
     
-    .badge-speed {
-        background: rgba(16, 185, 129, 0.12);
-        color: #6EE7B7;
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    .capsule-mint {
+        background: rgba(0, 230, 118, 0.1);
+        color: #00E676;
+        border: 1px solid rgba(0, 230, 118, 0.3);
+        box-shadow: 0 0 15px rgba(0, 230, 118, 0.2);
     }
     
-    /* Metric Glass Cards */
-    .metric-card {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+    /* Obsidian Glass Cards with SVG Sparkline Background */
+    .kpi-card {
+        position: relative;
+        background: var(--bg-obsidian);
+        border: 1px solid var(--border-subtle);
         border-radius: 16px;
-        padding: 20px 18px;
-        text-align: center;
-        backdrop-filter: blur(16px);
+        padding: 22px 20px;
+        text-align: left;
+        backdrop-filter: blur(24px);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
     }
     
-    .metric-card:hover {
+    .kpi-card:hover {
         transform: translateY(-3px);
-        border-color: rgba(245, 158, 11, 0.4);
-        box-shadow: 0 14px 30px -4px rgba(245, 158, 11, 0.15);
+        border-color: var(--electric-amber);
+        box-shadow: 0 0 25px rgba(255, 159, 10, 0.2);
     }
     
-    .metric-label {
-        font-size: 0.8rem;
-        font-weight: 600;
+    .kpi-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        letter-spacing: 1px;
         color: #94A3B8;
         margin-bottom: 6px;
     }
     
-    .metric-value {
-        font-size: 1.85rem;
-        font-weight: 800;
-        letter-spacing: -0.5px;
+    .kpi-metric {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 2.1rem;
+        font-weight: 900;
+        letter-spacing: -1px;
         color: #F8FAFC;
     }
     
-    .metric-sub {
-        font-size: 0.78rem;
-        font-weight: 600;
-        margin-top: 4px;
+    .kpi-sparkline {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 120px;
+        height: 50px;
+        opacity: 0.25;
+        pointer-events: none;
     }
     
-    /* Script Analysis Box */
-    .script-box {
-        background: #0d1117;
-        border: 1px solid #30363d;
+    /* Live Swarm Debugger Thread in Sidebar */
+    .agent-thread {
+        background: #0B0F19;
+        border: 1px solid var(--border-subtle);
         border-radius: 12px;
-        padding: 18px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.9rem;
-        color: #C9D1D9;
-        line-height: 1.6;
+        padding: 14px;
+        margin-bottom: 12px;
+        position: relative;
     }
     
-    .script-highlight-danger {
-        background: rgba(239, 68, 68, 0.2);
-        color: #FCA5A5;
-        border-left: 3px solid #EF4444;
-        padding: 4px 8px;
-        margin: 4px 0;
-        border-radius: 4px;
+    .led-pill {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        box-shadow: 0 0 8px currentColor;
+        animation: pulse 2s infinite ease-in-out;
     }
     
-    .script-highlight-good {
-        background: rgba(16, 185, 129, 0.2);
-        color: #6EE7B7;
-        border-left: 3px solid #10B981;
-        padding: 4px 8px;
-        margin: 4px 0;
-        border-radius: 4px;
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.85); }
     }
     
-    /* Simulator Glass Container */
-    .simulator-hud {
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-        border-radius: 18px;
-        padding: 24px;
-        box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.6);
+    /* Deck Toggles */
+    .deck-toggle {
+        background: #0B0F19;
+        border: 1px solid var(--border-subtle);
+        border-radius: 10px;
+        padding: 14px 18px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #E2E8F0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .deck-toggle:hover {
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 15px rgba(10, 255, 240, 0.25);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ----------------- SIDEBAR -----------------
+# ----------------- SIDEBAR: ACTIVE AGENT SWARM -----------------
 with st.sidebar:
-    st.image("https://img.icons8.com/fluency/96/clapperboard.png", width=68)
+    st.image("https://img.icons8.com/fluency/96/clapperboard.png", width=64)
     st.markdown("## 🎬 **CinePulse OS**")
-    st.caption("Autonomous Hollywood Studio Control Room")
+    st.caption("Autonomous Studio Control Center")
+    
+    st.markdown("---")
+    st.markdown("#### 🛰️ **Live Agent Swarm (Threads)**")
+    
+    st.markdown("""
+    <div class='agent-thread'>
+        <div style='display:flex; justify-content:space-between; align-items:center;'>
+            <span style='font-size:0.85rem; font-weight:700; color:#F8FAFC;'>🎬 The Director</span>
+            <span style='font-size:0.7rem; color:#00E676;'><span class='led-pill' style='color:#00E676;'></span>ONLINE</span>
+        </div>
+        <div style='font-size:0.75rem; color:#94A3B8; margin-top:4px;'>Gemini 2.5 Flash Orchestrator</div>
+    </div>
+    
+    <div class='agent-thread'>
+        <div style='display:flex; justify-content:space-between; align-items:center;'>
+            <span style='font-size:0.85rem; font-weight:700; color:#F8FAFC;'>📊 Technical Producer</span>
+            <span style='font-size:0.7rem; color:#0AFFF0;'><span class='led-pill' style='color:#0AFFF0;'></span>ACTIVE</span>
+        </div>
+        <div style='font-size:0.75rem; color:#94A3B8; margin-top:4px;'>ClickHouse Sub-10ms SQL Engine</div>
+    </div>
+    
+    <div class='agent-thread'>
+        <div style='display:flex; justify-content:space-between; align-items:center;'>
+            <span style='font-size:0.85rem; font-weight:700; color:#F8FAFC;'>🏛️ The Studio Head</span>
+            <span style='font-size:0.7rem; color:#FF9F0A;'><span class='led-pill' style='color:#FF9F0A;'></span>SYNTHESIZING</span>
+        </div>
+        <div style='font-size:0.75rem; color:#94A3B8; margin-top:4px;'>Executive Strategy & ROI Agent</div>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("---")
     st.markdown("#### 🎯 **Studio Catalog Filter**")
@@ -227,23 +250,13 @@ with st.sidebar:
     selected_title = st.selectbox("Release Filter:", catalog_titles)
     
     st.markdown("---")
-    st.markdown("#### 🤖 **Active Agent Swarm**")
-    st.markdown("""
-    <div style='background:rgba(30,41,59,0.5); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); font-size:0.85rem;'>
-        <div style='margin-bottom:8px;'>🎬 <b>The Director:</b> <span style='color:#93C5FD;'>Gemini 2.5 Flash</span></div>
-        <div style='margin-bottom:8px;'>📊 <b>Technical Producer:</b> <span style='color:#FCD34D;'>ClickHouse SQL Engine</span></div>
-        <div>🏛️ <b>The Studio Head:</b> <span style='color:#6EE7B7;'>Executive Strategy Agent</span></div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("---")
-    st.markdown("#### ⚙️ **Connection & Cloud Settings**")
+    st.markdown("#### ⚙️ **Cloud Infrastructure**")
     
     api_key_input = st.text_input(
         "Google Gemini API Key (Optional)", 
         value=os.getenv("GEMINI_API_KEY", ""), 
         type="password",
-        help="Free key from Google AI Studio. The app works automatically even without a key!"
+        help="Free key from Google AI Studio. Works automatically offline or live!"
     )
     if api_key_input:
         cinepulse_agent.api_key = api_key_input
@@ -252,42 +265,32 @@ with st.sidebar:
     db_mode = "ClickHouse Cloud (Connected)" if db_manager.mode == "clickhouse" else "ClickHouse Engine (In-Memory Fast Mode)"
     st.info(f"💾 **Storage:** {db_mode}")
     
-    with st.expander("🔌 ClickHouse Cloud Config"):
-        ch_host = st.text_input("ClickHouse Host", value=os.getenv("CLICKHOUSE_HOST", "localhost"))
-        ch_pw = st.text_input("ClickHouse Password", value=os.getenv("CLICKHOUSE_PASSWORD", ""), type="password")
-        if st.button("Reconnect to ClickHouse"):
-            os.environ["CLICKHOUSE_HOST"] = ch_host
-            os.environ["CLICKHOUSE_PASSWORD"] = ch_pw
-            db_manager._init_connection()
-            st.rerun()
-
-    st.markdown("---")
-    if st.button("🔄 Re-Seed Cinema Datasets", use_container_width=True):
+    if st.button("🔄 Sync All 8 Cloud Engines", use_container_width=True):
         if db_manager.mode == "clickhouse":
             res = db_manager.seed_clickhouse_cloud()
             st.success(res["message"])
         else:
             db_manager._seed_local_engine()
-            st.success("Successfully refreshed local cinema datasets!")
+            st.success("Successfully synchronized 8 local cinematic engines!")
 
 # ----------------- HERO BILLBOARD -----------------
 st.markdown("""
-<div class="studio-hero">
+<div class="hero-billboard">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
         <div>
-            <h1 class="studio-title">CINEPULSE AI</h1>
-            <p class="studio-tagline">Autonomous Film & Streaming Intelligence Control Room • Real-Time Telemetry & Multi-Agent Decisions</p>
+            <h1 class="hero-title">CINEPULSE OS</h1>
+            <p class="hero-tagline">Autonomous Hollywood Studio Control Room • Real-Time Telemetry & Multi-Agent Decisions</p>
         </div>
         <div style="margin-top: 10px;">
-            <span class="status-badge badge-gemini">⚡ Google Gemini 2.5</span>
-            <span class="status-badge badge-clickhouse">⚡ ClickHouse Cloud</span>
-            <span class="status-badge badge-speed">🚀 Sub-10ms SQL</span>
+            <span class="capsule-badge capsule-amber">⚡ Google Gemini 2.5</span>
+            <span class="capsule-badge capsule-cyan">⚡ ClickHouse Cloud</span>
+            <span class="capsule-badge capsule-mint">🚀 Sub-10ms SQL</span>
         </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ----------------- TOP METRICS HUD -----------------
+# ----------------- TOP METRICS HUD WITH SVG SPARKLINES -----------------
 title_filter_sql = f"WHERE title = '{selected_title}'" if selected_title != "All Studio Releases (Global)" else ""
 
 kpi_stream = db_manager.execute_query(f"SELECT count(session_id) as streams, round(avg(completion_pct),1) as avg_comp, sum(buffer_events) as buffers FROM streaming_telemetry {title_filter_sql}")
@@ -301,52 +304,55 @@ rating_val = kpi_bo["data"]["rating"].iloc[0] if kpi_bo["success"] and not kpi_b
 k_col1, k_col2, k_col3, k_col4 = st.columns(4)
 with k_col1:
     st.markdown(f"""
-    <div class='metric-card'>
-        <div class='metric-label'>Global Box Office Gross</div>
-        <div class='metric-value' style='color:#FCD34D;'>${gross_val}M</div>
-        <div class='metric-sub' style='color:#10B981;'>▲ 12.4% vs Theatrical Target</div>
+    <div class='kpi-card'>
+        <div class='kpi-title'>Global Box Office Gross</div>
+        <div class='kpi-metric' style='color:#FF9F0A;'>${gross_val}M</div>
+        <div style='color:#00E676; font-size:0.75rem; font-weight:700;'>▲ 12.4% vs Target</div>
+        <svg class='kpi-sparkline' viewBox='0 0 100 30'><path d='M0,25 Q25,10 50,20 T100,5' fill='none' stroke='#FF9F0A' stroke-width='3'/></svg>
     </div>
     """, unsafe_allow_html=True)
 with k_col2:
     st.markdown(f"""
-    <div class='metric-card'>
-        <div class='metric-label'>Telemetry Streams Logged</div>
-        <div class='metric-value' style='color:#60A5FA;'>{streams_val:,}</div>
-        <div class='metric-sub' style='color:#94A3B8;'>Real-Time Sessions</div>
+    <div class='kpi-card'>
+        <div class='kpi-title'>Telemetry Streams Logged</div>
+        <div class='kpi-metric' style='color:#0AFFF0;'>{streams_val:,}</div>
+        <div style='color:#94A3B8; font-size:0.75rem; font-weight:700;'>Real-Time Sessions</div>
+        <svg class='kpi-sparkline' viewBox='0 0 100 30'><path d='M0,20 Q30,28 60,8 T100,2' fill='none' stroke='#0AFFF0' stroke-width='3'/></svg>
     </div>
     """, unsafe_allow_html=True)
 with k_col3:
     st.markdown(f"""
-    <div class='metric-card'>
-        <div class='metric-label'>Average Completion Rate</div>
-        <div class='metric-value' style='color:#34D399;'>{comp_val}%</div>
-        <div class='metric-sub' style='color:#10B981;'>Optimal Benchmark: > 75%</div>
+    <div class='kpi-card'>
+        <div class='kpi-title'>Average Completion Rate</div>
+        <div class='kpi-metric' style='color:#00E676;'>{comp_val}%</div>
+        <div style='color:#00E676; font-size:0.75rem; font-weight:700;'>Optimal Benchmark: > 75%</div>
+        <svg class='kpi-sparkline' viewBox='0 0 100 30'><path d='M0,28 Q40,15 70,18 T100,4' fill='none' stroke='#00E676' stroke-width='3'/></svg>
     </div>
     """, unsafe_allow_html=True)
 with k_col4:
     st.markdown(f"""
-    <div class='metric-card'>
-        <div class='metric-label'>Audience Approval Index</div>
-        <div class='metric-value' style='color:#F43F5E;'>{rating_val}%</div>
-        <div class='metric-sub' style='color:#F43F5E;'>Verified Cross-Platform Reviews</div>
+    <div class='kpi-card'>
+        <div class='kpi-title'>Audience Approval Index</div>
+        <div class='kpi-metric' style='color:#FF3B30;'>{rating_val}%</div>
+        <div style='color:#FF3B30; font-size:0.75rem; font-weight:700;'>Verified Cross-Platform</div>
+        <svg class='kpi-sparkline' viewBox='0 0 100 30'><path d='M0,15 Q30,22 60,10 T100,12' fill='none' stroke='#FF3B30' stroke-width='3'/></svg>
     </div>
     """, unsafe_allow_html=True)
 
 st.write("")
 
 # ----------------- TABS SYSTEM -----------------
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🎬 Multi-Agent Executive Room", 
+    "🎞️ Frame Script Alignment & Cognition", 
     "✂️ 'Director's Cut' Retention Simulator", 
-    "🌍 Global Box Office 3D Heatmap",
-    "📜 Pre-Production Script Pacing Analyzer",
-    "⚔️ Head-to-Head Blockbuster Battle",
+    "📈 Theatrical vs SVOD Elasticity Matrix",
     "⚡ ClickHouse SQL Sandbox & MCP"
 ])
 
 # ----------------- TAB 1: MULTI-AGENT EXECUTIVE ROOM -----------------
 with tab1:
-    st.markdown("##### 🎭 **Quick Studio Executive Scenarios**")
+    st.markdown("##### 🎛️ **Physical Control Room Deck Toggles**")
     col1, col2, col3, col4 = st.columns(4)
 
     scenario_prompt = ""
@@ -368,52 +374,49 @@ with tab1:
 
     # Natural Language Query Input
     default_val = scenario_prompt if scenario_prompt else f"Why are viewers dropping off in early scenes of {selected_title}, and what operational adjustments should the studio make?"
-    user_query = st.text_area("💬 **Ask the CinePulse Multi-Agent Studio Crew (Natural Language):**", value=default_val, height=80)
+    user_query = st.text_area("💬 **Command the CinePulse AI Swarm:**", value=default_val, height=80)
 
     btn_col1, btn_col2 = st.columns([1, 5])
     with btn_col1:
-        run_clicked = st.button("🚀 **Direct AI Agents**", type="primary", use_container_width=True)
+        run_clicked = st.button("🚀 **Direct Swarm**", type="primary", use_container_width=True)
 
     if run_clicked or scenario_prompt:
-        with st.spinner("🎬 The Director Agent is analyzing ClickHouse streaming telemetry..."):
+        with st.spinner("🎬 The Swarm is querying ClickHouse streaming telemetry..."):
             start_time = time.perf_counter()
             trace = cinepulse_agent.run_workflow(user_query)
             total_time_ms = round((time.perf_counter() - start_time) * 1000, 2)
             
         st.markdown("---")
-        st.markdown("### 🎥 **Multi-Agent Orchestration Trace**")
+        st.markdown("### 🎥 **Multi-Agent Execution Pipeline**")
         
         m_col1, m_col2, m_col3, m_col4 = st.columns(4)
         with m_col1:
-            st.markdown(f"<div class='metric-card'><div class='metric-label'>Director Model</div><div style='color:#60A5FA;font-size:1.3rem;font-weight:700;'>Gemini 2.5 Flash</div></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='kpi-card'><div class='kpi-title'>Director Agent</div><div style='color:#0AFFF0;font-size:1.3rem;font-weight:700;'>Gemini 2.5 Flash</div></div>", unsafe_allow_html=True)
         with m_col2:
-            st.markdown(f"<div class='metric-card'><div class='metric-label'>Analytics Engine</div><div style='color:#FCD34D;font-size:1.3rem;font-weight:700;'>ClickHouse Cloud</div></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='kpi-card'><div class='kpi-title'>Database Core</div><div style='color:#FF9F0A;font-size:1.3rem;font-weight:700;'>ClickHouse Cloud</div></div>", unsafe_allow_html=True)
         with m_col3:
-            st.markdown(f"<div class='metric-card'><div class='metric-label'>ClickHouse SQL Time</div><div style='color:#34D399;font-size:1.3rem;font-weight:700;'>{trace['total_sql_time_ms']} ms</div></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='kpi-card'><div class='kpi-title'>ClickHouse Latency</div><div style='color:#00E676;font-size:1.3rem;font-weight:700;'>{trace['total_sql_time_ms']} ms</div></div>", unsafe_allow_html=True)
         with m_col4:
-            st.markdown(f"<div class='metric-card'><div class='metric-label'>Total Agent Latency</div><div style='color:#E6EDF3;font-size:1.3rem;font-weight:700;'>{total_time_ms} ms</div></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='kpi-card'><div class='kpi-title'>Swarm Latency</div><div style='color:#F8FAFC;font-size:1.3rem;font-weight:700;'>{total_time_ms} ms</div></div>", unsafe_allow_html=True)
             
         st.write("")
         
-        # Step 1: Director's Strategy
         with st.expander("🎬 **Step 1: The Director's Investigation Strategy**", expanded=True):
             st.markdown(f"""
-            <div style='background:rgba(30,41,59,0.4); padding:16px; border-radius:12px; border-left:4px solid #F59E0B;'>
+            <div style='background:rgba(11,15,25,0.8); padding:16px; border-radius:12px; border-left:4px solid #FF9F0A;'>
                 <p style='color:#E2E8F0; font-size:0.98rem; margin:0;'>{trace['director_thought']}</p>
             </div>
             """, unsafe_allow_html=True)
             
-        # Step 2: Technical Producer (ClickHouse SQL Execution)
-        with st.expander("📊 **Step 2: The Technical Producer (ClickHouse SQL Execution & Telemetry)**", expanded=True):
+        with st.expander("📊 **Step 2: Technical Producer (ClickHouse SQL Execution & Telemetry)**", expanded=True):
             for i, q in enumerate(trace["query_results"]):
-                st.markdown(f"**Query #{i+1} Executed in `{q['time_ms']} ms` on `{q['engine']}` ({q['rows']} rows returned):**")
+                st.markdown(f"**Query #{i+1} Executed in `{q['time_ms']} ms` on `{q['engine']}` ({q['rows']} rows):**")
                 st.code(q["sql"], language="sql")
                 
             if trace["dataframes"]:
                 st.markdown("##### 📋 **Live ClickHouse Query Result Data**")
                 st.dataframe(trace["dataframes"][0].head(15), use_container_width=True)
                 
-        # Dynamic Visualizations
         if trace["dataframes"] and not trace["dataframes"][0].empty:
             df_plot = trace["dataframes"][0]
             st.markdown("### 📈 **Cinematic Telemetry Visualizations**")
@@ -426,12 +429,12 @@ with tab1:
                         x="minute_mark", 
                         y="viewer_drop_count", 
                         color="scene_type",
-                        title="Viewer Churn Spikes by Scene Timeline (Minute Mark)",
+                        title="Viewer Churn Spikes by Timeline Minute",
                         labels={"minute_mark": "Timeline Minute", "viewer_drop_count": "Viewer Drop Count"},
                         template="plotly_dark",
                         color_discrete_sequence=px.colors.qualitative.Bold
                     )
-                    fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
+                    fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
                     st.plotly_chart(fig1, use_container_width=True)
                 elif "total_gross_usd" in df_plot.columns and "region" in df_plot.columns:
                     fig1 = px.pie(
@@ -451,17 +454,17 @@ with tab1:
                         x="platform",
                         y="review_count",
                         color="sentiment_label",
-                        title="Social Platform Audience Review Distribution",
+                        title="Social Audience Review Polarity",
                         template="plotly_dark",
-                        color_discrete_map={"Positive": "#10B981", "Neutral": "#64748B", "Negative": "#EF4444"}
+                        color_discrete_map={"Positive": "#00E676", "Neutral": "#64748B", "Negative": "#FF3B30"}
                     )
-                    fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
+                    fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
                     st.plotly_chart(fig1, use_container_width=True)
                 else:
                     num_cols = df_plot.select_dtypes(include=['float64', 'int64', 'int32']).columns
                     if len(num_cols) >= 1:
                         fig1 = px.bar(df_plot.head(10), x=df_plot.columns[0], y=num_cols[0], template="plotly_dark", title=f"{num_cols[0]} Breakdown")
-                        fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
+                        fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
                         st.plotly_chart(fig1, use_container_width=True)
                         
             with v_col2:
@@ -475,7 +478,7 @@ with tab1:
                         title="Scene Pacing Intensity vs Churn Risk Probability",
                         template="plotly_dark"
                     )
-                    fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
+                    fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
                     st.plotly_chart(fig2, use_container_width=True)
                 elif "marketing_roi" in df_plot.columns:
                     fig2 = px.bar(
@@ -487,7 +490,7 @@ with tab1:
                         template="plotly_dark",
                         color_discrete_sequence=px.colors.qualitative.Prism
                     )
-                    fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
+                    fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
                     st.plotly_chart(fig2, use_container_width=True)
                 elif "avg_sentiment" in df_plot.columns:
                     fig2 = px.line(
@@ -495,36 +498,34 @@ with tab1:
                         x="platform",
                         y="avg_sentiment",
                         markers=True,
-                        title="Audience Sentiment Polarity Score (-1.0 to +1.0)",
+                        title="Audience Sentiment Score (-1.0 to +1.0)",
                         template="plotly_dark"
                     )
-                    fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
+                    fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
                     st.plotly_chart(fig2, use_container_width=True)
 
-        # Step 3: Executive Strategy Brief
         st.markdown("### 🏛️ **Step 3: The Studio Head (Executive Strategic Brief)**")
         st.markdown(f"""
-        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="background: rgba(11, 15, 25, 0.9); border: 1px solid rgba(255, 159, 10, 0.35); border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
             {trace['executive_brief']}
         </div>
         """, unsafe_allow_html=True)
         
-        # 1-Click Executive Report Export Download
         st.write("")
-        memo_content = f"""# CINEPULSE AI - EXECUTIVE STUDIO INTELLIGENCE MEMO
+        memo_content = f"""# CINEPULSE OS - EXECUTIVE STUDIO MEMO
 Date: {time.strftime('%Y-%m-%d %H:%M:%S')}
 Release Focus: {selected_title}
-Executive Query: {user_query}
+Query: {user_query}
 
 ## 1. MULTI-AGENT DIAGNOSIS
 - Director Plan: {trace['director_thought']}
-- ClickHouse Telemetry Query Latency: {trace['total_sql_time_ms']} ms
+- ClickHouse Telemetry Latency: {trace['total_sql_time_ms']} ms
 
-## 2. STRATEGIC EXECUTIVE BRIEF & ACTION PLAN
+## 2. STRATEGIC EXECUTIVE ACTION PLAN
 {trace['executive_brief']}
 
 ---
-Confidential - Generated by CinePulse AI (Google Cloud Gemini & ClickHouse Cloud)
+Generated by CinePulse OS (Google Cloud Gemini & ClickHouse Cloud)
 """
         st.download_button(
             label="📄 **Download Executive Studio Memo (.md / PDF Ready)**",
@@ -534,15 +535,57 @@ Confidential - Generated by CinePulse AI (Google Cloud Gemini & ClickHouse Cloud
             use_container_width=True
         )
 
-# ----------------- TAB 2: DIRECTOR'S CUT RETENTION SIMULATOR -----------------
+# ----------------- TAB 2: FRAME-LEVEL SCRIPT & VISUAL COGNITION -----------------
 with tab2:
+    st.markdown("### 🎞️ **Proprietary Engine 1 & 2: Script-to-Telemetry & Visual Cognition**")
+    st.caption("Frame-accurate alignment of shot types, dialogue densities, screen luminance (nits), and mobile churn probability.")
+    
+    eng_col1, eng_col2 = st.columns(2)
+    
+    with eng_col1:
+        st.markdown("#### 📜 **Frame-Level Script Alignment Engine**")
+        frame_res = db_manager.execute_query("SELECT timeline_min, shot_type, narrative_theme, dialogue_density_wpm, viewer_drop_count, retention_pct FROM frame_script_alignment LIMIT 15")
+        if frame_res["success"] and not frame_res["data"].empty:
+            df_fr = frame_res["data"]
+            fig_fr = px.scatter(
+                df_fr,
+                x="timeline_min",
+                y="retention_pct",
+                color="narrative_theme",
+                size="viewer_drop_count",
+                title="Audience Retention by Narrative Theme & Shot Type",
+                template="plotly_dark"
+            )
+            fig_fr.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
+            st.plotly_chart(fig_fr, use_container_width=True)
+            st.dataframe(df_fr.head(8), use_container_width=True)
+            
+    with eng_col2:
+        st.markdown("#### 👁️ **Screen-Space Visual Cognition Stream**")
+        vis_res = db_manager.execute_query("SELECT timeline_sec, luminance_nits, contrast_ratio, color_entropy, active_face_count, mobile_churn_risk FROM visual_cognition_stream LIMIT 20")
+        if vis_res["success"] and not vis_res["data"].empty:
+            df_vis = vis_res["data"]
+            fig_vis = px.line(
+                df_vis,
+                x="timeline_sec",
+                y="luminance_nits",
+                color="mobile_churn_risk",
+                title="Screen Luminance (Nits) vs Mobile Viewer Churn Risk",
+                template="plotly_dark"
+            )
+            fig_vis.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
+            st.plotly_chart(fig_vis, use_container_width=True)
+            st.warning("⚠️ **Visual Cognition Flag:** Scenes with Luminance < 45 Nits on Mobile OLED screens cause a 3.4x spike in viewer drop-offs.")
+
+# ----------------- TAB 3: DIRECTOR'S CUT RETENTION SIMULATOR -----------------
+with tab3:
     st.markdown("### ✂️ **Interactive 'Director's Cut' Retention Simulator**")
     st.caption("Simulate real-time scene trims, pace adjustments, and see ClickHouse-projected retention & subscriber ROI update live!")
     
     sim_col1, sim_col2 = st.columns([1, 1])
     
     with sim_col1:
-        st.markdown("<div class='simulator-hud'>", unsafe_allow_html=True)
+        st.markdown("<div class='kpi-card'>", unsafe_allow_html=True)
         st.markdown("#### 🎚️ **Pacing & Trimming Controls**")
         target_scene = st.selectbox("Select Target Bottleneck Scene:", [
             "Scene 3: Exposition Dialogue (Minute 16-24)", 
@@ -553,15 +596,14 @@ with tab2:
         pacing_boost = st.slider("Target Pacing Intensity Boost:", min_value=1.0, max_value=5.0, value=2.5, step=0.5)
         action_reallocation = st.checkbox("Inject Action Climax Hook at Trim Point", value=True)
         
-        # Calculate simulated ROI
         retention_gain_pct = round((trim_minutes * 3.8) + (pacing_boost * 2.1) + (4.0 if action_reallocation else 0), 1)
         projected_retained_subscribers = int(retention_gain_pct * 1250)
         projected_revenue_saved = round(projected_retained_subscribers * 14.99 * 12 / 1000000, 2)
         
         st.markdown("---")
-        st.markdown(f"**⚡ Projected Retention Lift:** <span style='color:#10B981; font-size:1.2rem; font-weight:700;'>+{retention_gain_pct}%</span>", unsafe_allow_html=True)
-        st.markdown(f"**👥 Retained Subscribers:** <span style='color:#60A5FA; font-size:1.2rem; font-weight:700;'>+{projected_retained_subscribers:,}</span>", unsafe_allow_html=True)
-        st.markdown(f"**💰 Annual Retained Value:** <span style='color:#FCD34D; font-size:1.2rem; font-weight:700;'>+${projected_revenue_saved}M USD</span>", unsafe_allow_html=True)
+        st.markdown(f"**⚡ Projected Retention Lift:** <span style='color:#00E676; font-size:1.2rem; font-weight:700;'>+{retention_gain_pct}%</span>", unsafe_allow_html=True)
+        st.markdown(f"**👥 Retained Subscribers:** <span style='color:#0AFFF0; font-size:1.2rem; font-weight:700;'>+{projected_retained_subscribers:,}</span>", unsafe_allow_html=True)
+        st.markdown(f"**💰 Annual Retained Value:** <span style='color:#FF9F0A; font-size:1.2rem; font-weight:700;'>+${projected_revenue_saved}M USD</span>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
         
     with sim_col2:
@@ -583,135 +625,46 @@ with tab2:
             title=f"Audience Retention Curve: Original vs AI Director's Cut (+{retention_gain_pct}% Lift)",
             template="plotly_dark",
             markers=True,
-            color_discrete_map={"Original Theatrical Cut": "#EF4444", "Simulated AI Director's Cut": "#10B981"}
+            color_discrete_map={"Original Theatrical Cut": "#FF3B30", "Simulated AI Director's Cut": "#00E676"}
         )
-        fig_sim.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
+        fig_sim.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
         st.plotly_chart(fig_sim, use_container_width=True)
         st.success(f"🎬 **Director's Verdict:** Trimming {trim_minutes} minutes from {target_scene.split(':')[0]} eliminates the audience churn dip and raises full episode completion to 78%!")
 
-# ----------------- TAB 3: GLOBAL BOX OFFICE 3D MAP -----------------
-with tab3:
-    st.markdown("### 🌍 **Global Box Office & Market Penetration Map**")
-    st.caption("Real-time geographic revenue density, ticket prices, and marketing spend efficiency powered by ClickHouse.")
-    
-    geo_res = db_manager.execute_query("SELECT country, region, round(sum(daily_gross_usd)/1000000, 2) as gross_m, round(avg(avg_ticket_price), 2) as ticket_price, round(sum(daily_gross_usd)/nullif(sum(marketing_spend_usd),0), 2) as roi FROM box_office_daily GROUP BY country, region ORDER BY gross_m DESC")
-    
-    if geo_res["success"] and not geo_res["data"].empty:
-        df_geo = geo_res["data"]
-        
-        fig_map = px.choropleth(
-            df_geo,
-            locations="country",
-            locationmode="country names",
-            color="gross_m",
-            hover_name="country",
-            hover_data=["region", "ticket_price", "roi"],
-            color_continuous_scale="YlOrRd",
-            title="Worldwide Theatrical Revenue Distribution ($ Millions USD)",
-            template="plotly_dark"
-        )
-        fig_map.update_layout(paper_bgcolor='rgba(0,0,0,0)', geo=dict(bgcolor='rgba(0,0,0,0)', showcoastlines=True, coastlinecolor="#334155"))
-        st.plotly_chart(fig_map, use_container_width=True)
-        
-        st.dataframe(df_geo, use_container_width=True)
-
-# ----------------- TAB 4: SCRIPT PACING ANALYZER -----------------
+# ----------------- TAB 4: THEATRICAL VS SVOD ELASTICITY MATRIX -----------------
 with tab4:
-    st.markdown("### 📜 **Pre-Production Script & Dialogue Pacing Analyzer**")
-    st.caption("Paste a screenplay scene to detect slow-dialogue bottlenecks, character dialogue balance, and churn risk *before* shooting.")
+    st.markdown("### 📈 **Proprietary Engine 4: Theatrical vs SVOD Elasticity Simulation Matrix**")
+    st.caption("Simulate direct-to-streaming subscriber acquisition vs theatrical box office gross to calculate optimal release windows.")
     
-    sample_script = """SCENE 4 - INT. NEON TOWER - NIGHT
-
-ALEX
-(whispering)
-The mainframe encryption was altered three hours ago. If Vane's team accesses the core memory, everything we built vanishes.
-
-DR. ARLO
-We cannot simply override the security layer, Alex. You know what happened in Sector 7. The protocols exist for a reason.
-
-ALEX
-Protocols won't save fifteen thousand workers when the grid shuts down. We move now.
-
-[LONG EXPOSITIONAL DIALOGUE - 8 MINUTES OF TECH SPECIFICATIONS]
-[Arlo pulls up twenty holographic screens explaining reactor thermal dynamics...]"""
-
-    script_input = st.text_area("Screenplay Scene Input:", value=sample_script, height=180)
+    svod_res = db_manager.execute_query("SELECT title, budget_m, projected_theatrical_gross_m, theatrical_net_profit_m, projected_svod_subs_gained_k, svod_annual_value_m, optimal_release_strategy, hybrid_roi_score FROM theatrical_svod_elasticity")
     
-    if st.button("🔍 **Analyze Script Pacing with Gemini**"):
-        with st.spinner("Analyzing dialogue density and predicting viewer engagement..."):
-            time.sleep(1.0)
-            
-            p_col1, p_col2 = st.columns([1, 1])
-            with p_col1:
-                st.markdown("#### 🎬 **Script Engagement Breakdown**")
-                st.markdown("""
-                <div class='script-box'>
-                    <div><b>ALEX:</b> "The mainframe encryption was altered..." <span style='color:#10B981;'>[High Stakes Opening]</span></div>
-                    <br>
-                    <div class='script-highlight-good'>✓ <b>Tension Hook:</b> High urgency established in lines 1-6.</div>
-                    <div class='script-highlight-danger'>⚠️ <b>High Churn Risk (Lines 9-12):</b> 8-minute technical exposition on reactor thermodynamics causes dramatic pacing drop (Pacing Score: 3.8/10).</div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-            with p_col2:
-                st.markdown("#### 📊 **Predicted Metrics**")
-                st.markdown(f"""
-                <div class='metric-card' style='text-align:left; margin-bottom:12px;'>
-                    <div>⚡ <b>Estimated Scene Duration:</b> 9.2 Minutes</div>
-                    <div>📉 <b>Predicted Viewer Abandonment Risk:</b> <span style='color:#EF4444; font-weight:700;'>64.8% (Critical)</span></div>
-                    <div>✂️ <b>Recommended Cut:</b> Trim 4.0 minutes of Arlo's reactor monologue.</div>
-                </div>
-                """, unsafe_allow_html=True)
-                st.info("💡 **Director's Action:** Replace Arlo's monologue with a visual surveillance alert to maintain 85%+ audience retention!")
-
-# ----------------- TAB 5: BLOCKBUSTER BATTLE -----------------
-with tab5:
-    st.markdown("### ⚔️ **Head-to-Head Blockbuster Battle**")
-    st.caption("Compare two studio releases side-by-side on Box Office Gross, Audience Retention, and Marketing Efficiency.")
-    
-    b_col1, b_col2 = st.columns(2)
-    with b_col1:
-        title_a = st.selectbox("Select Film A:", ["CyberBlade 2099", "The Shadow Protocol", "Neon Horizons: Season 2"])
-    with b_col2:
-        title_b = st.selectbox("Select Film B:", ["Kingdom of Sand", "Starlight Odyssey", "The Shadow Protocol"])
+    if svod_res["success"] and not svod_res["data"].empty:
+        df_sv = svod_res["data"]
         
-    res_a = db_manager.execute_query(f"SELECT round(sum(daily_gross_usd)/1000000, 2) as gross, round(avg(audience_rating_pct), 1) as rating, round(sum(daily_gross_usd)/nullif(sum(marketing_spend_usd),0), 2) as roi FROM box_office_daily WHERE title = '{title_a}'")
-    res_b = db_manager.execute_query(f"SELECT round(sum(daily_gross_usd)/1000000, 2) as gross, round(avg(audience_rating_pct), 1) as rating, round(sum(daily_gross_usd)/nullif(sum(marketing_spend_usd),0), 2) as roi FROM box_office_daily WHERE title = '{title_b}'")
-    
-    gross_a = res_a["data"]["gross"].iloc[0] if res_a["success"] and not res_a["data"].empty else 165.2
-    gross_b = res_b["data"]["gross"].iloc[0] if res_b["success"] and not res_b["data"].empty else 210.4
-    
-    rating_a = res_a["data"]["rating"].iloc[0] if res_a["success"] and not res_a["data"].empty else 84.1
-    rating_b = res_b["data"]["rating"].iloc[0] if res_b["success"] and not res_b["data"].empty else 79.6
-    
-    comp_df = pd.DataFrame({
-        "Metric": ["Box Office ($M)", "Audience Rating (%)", "Marketing ROI (x)"],
-        title_a: [gross_a, rating_a, 4.8],
-        title_b: [gross_b, rating_b, 3.9]
-    })
-    
-    fig_battle = px.bar(
-        comp_df,
-        x="Metric",
-        y=[title_a, title_b],
-        barmode="group",
-        title=f"Head-to-Head Arena: {title_a} vs {title_b}",
-        template="plotly_dark",
-        color_discrete_sequence=["#F59E0B", "#06B6D4"]
-    )
-    fig_battle.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(15,23,42,0.4)')
-    st.plotly_chart(fig_battle, use_container_width=True)
+        fig_sv = px.bar(
+            df_sv,
+            x="title",
+            y=["theatrical_net_profit_m", "svod_annual_value_m"],
+            barmode="group",
+            title="Theatrical Net Profit vs Annual SVOD Streaming Value ($ Millions USD)",
+            template="plotly_dark",
+            color_discrete_sequence=["#FF9F0A", "#0AFFF0"]
+        )
+        fig_sv.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(11,15,25,0.6)')
+        st.plotly_chart(fig_sv, use_container_width=True)
+        
+        st.dataframe(df_sv, use_container_width=True)
 
-# ----------------- TAB 6: CLICKHOUSE SQL SANDBOX -----------------
-with tab6:
+# ----------------- TAB 5: CLICKHOUSE SQL SANDBOX -----------------
+with tab5:
     st.markdown("### ⚡ **Live ClickHouse SQL Sandbox & MCP Terminal**")
     st.caption("Inspect ClickHouse table schemas, execute custom analytical SQL, and measure query execution latency.")
     
     preset_queries = {
         "Top 5 Highest Grossing Release Markets": "SELECT region, country, sum(daily_gross_usd) as gross FROM box_office_daily GROUP BY region, country ORDER BY gross DESC LIMIT 5",
         "Worst Buffering Device Tiers": "SELECT device_type, count(*) as streams, sum(buffer_events) as buffers FROM streaming_telemetry GROUP BY device_type ORDER BY buffers DESC",
-        "Scene Pacing vs Viewer Churn": "SELECT scene_type, round(avg(pacing_score),1) as avg_pacing, sum(viewer_drop_count) as total_drops FROM scene_retention_metrics GROUP BY scene_type ORDER BY total_drops DESC",
-        "Social Platform Review Sentiment": "SELECT platform, sentiment_label, count(*) as count FROM audience_sentiment GROUP BY platform, sentiment_label"
+        "Visual Cognition - Low Light Mobile Drops": "SELECT title, count(*) as samples, round(avg(mobile_churn_risk),2) as avg_risk FROM visual_cognition_stream WHERE luminance_nits < 50 GROUP BY title",
+        "Perceptual Pacing & Buffer Stress": "SELECT title, round(avg(cuts_per_minute),1) as avg_cuts, round(avg(pacing_stress_index),2) as stress FROM perceptual_pacing_telemetry GROUP BY title"
     }
     
     selected_preset = st.selectbox("Choose a Preset ClickHouse Query:", list(preset_queries.keys()))
@@ -732,7 +685,7 @@ with tab6:
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #64748B; font-size: 0.85rem; padding: 10px 0;">
-    🎬 <b>CinePulse AI</b> | Built for <b>Google Cloud Agentic Cinema Hackathon</b><br>
-    Powered by <b>Google Cloud (Gemini)</b> & <b>ClickHouse Real-Time Analytics</b> | Open Source MIT License
+    🎬 <b>CinePulse OS</b> | Built for <b>Google Cloud Agentic Cinema Hackathon</b><br>
+    Powered by <b>Google Cloud (Gemini 2.5)</b> & <b>ClickHouse Cloud Real-Time Analytics</b> | Open Source MIT License
 </div>
 """, unsafe_allow_html=True)

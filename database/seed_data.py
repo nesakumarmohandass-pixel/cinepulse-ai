@@ -1,6 +1,12 @@
 """
-Seed dataset generator for CinePulse AI.
-Generates realistic cinematic box office, streaming telemetry, scene retention, and audience sentiment data.
+Seed dataset generator for CinePulse AI (Enterprise Edition).
+Generates:
+1. Standard Box Office, Streaming Telemetry, Scene Retention, Audience Sentiment.
+2. Proprietary Engines:
+   - Frame-Level Script-to-Telemetry Alignment
+   - Screen-Space Visual Cognition Heatmap (Luminance, Entropy, Face Count)
+   - Real-Time Perceptual Pacing & Audio Hash Pipeline
+   - Theatrical vs SVOD Elasticity Simulation Matrix
 """
 
 import random
@@ -31,14 +37,12 @@ def generate_box_office_data(days=30):
     
     for movie in [t for t in TITLES if t["episodes"] == 1]:
         title = movie["title"]
-        base_gross = movie["budget_m"] * 1_000_000 * 0.28  # Opening day gross target
+        base_gross = movie["budget_m"] * 1_000_000 * 0.28
         
         for d in range(1, days + 1):
             date_val = base_date + timedelta(days=d)
-            # Weekend boost multiplier
             day_of_week = date_val.weekday()
             weekend_boost = 2.4 if day_of_week in [4, 5, 6] else 0.85
-            # Decay curve over weeks
             decay = max(0.08, (1.0 / (1.0 + (d * 0.09))))
             
             for region, countries in REGIONS.items():
@@ -64,7 +68,7 @@ def generate_box_office_data(days=30):
                     })
     return pd.DataFrame(records)
 
-def generate_streaming_telemetry(num_sessions=2500):
+def generate_streaming_telemetry(num_sessions=3500):
     records = []
     now = datetime.now()
     
@@ -77,7 +81,6 @@ def generate_streaming_telemetry(num_sessions=2500):
         region = random.choice(list(REGIONS.keys()))
         device = random.choice(DEVICES)
         
-        # Simulate realistic drop-off behavior (higher drop-offs in early minutes if slow, or middle climax)
         completion_type = random.choices(["full", "drop_early", "drop_mid", "drop_late"], weights=[0.62, 0.14, 0.16, 0.08])[0]
         
         if completion_type == "full":
@@ -128,7 +131,6 @@ def generate_streaming_telemetry(num_sessions=2500):
 
 def generate_scene_retention_data():
     records = []
-    
     for show in TITLES:
         title = show["title"]
         runtime_min = show["runtime_min"]
@@ -142,7 +144,6 @@ def generate_scene_retention_data():
             scene_type = random.choice(scene_types)
             pacing = round(random.uniform(4.5, 9.8), 1)
             
-            # Slow exposition has higher churn risk
             if "Exposition" in scene_type or "Slow" in scene_type:
                 churn_score = round(random.uniform(0.45, 0.88), 2)
                 drops = random.randint(120, 680)
@@ -167,7 +168,7 @@ def generate_scene_retention_data():
             })
     return pd.DataFrame(records)
 
-def generate_audience_sentiment(num_reviews=800):
+def generate_audience_sentiment(num_reviews=1000):
     records = []
     now = datetime.now()
     
@@ -177,7 +178,6 @@ def generate_audience_sentiment(num_reviews=800):
         "Loved the character arc in the second half. Top tier writing.",
         "Stunning cinematography, will definitely rewatch this weekend."
     ]
-    
     negative_snippets = [
         "First 30 minutes dragged way too slow, almost turned it off.",
         "CGI felt unfinished in the third act battle scene.",
@@ -216,4 +216,147 @@ def generate_audience_sentiment(num_reviews=800):
             "comment_text": comment,
             "review_timestamp": review_time.strftime("%Y-%m-%d %H:%M:%S")
         })
+    return pd.DataFrame(records)
+
+# ----------------- 4 PROPRIETARY UNFAIR ADVANTAGE DATA ENGINES -----------------
+
+def generate_frame_script_alignment():
+    """Engine 1: Frame-Level Script-to-Telemetry Alignment."""
+    records = []
+    shots = ["Extreme Close-Up", "Medium Shot", "Wide Master Shot", "Over-The-Shoulder", "Tracking Action Shot", "Drone Establishing"]
+    themes = ["High Stakes Confrontation", "Technical Exposition", "Romantic Tension", "Quiet Reflection", "Action Climax"]
+    
+    for show in TITLES:
+        title = show["title"]
+        runtime_min = show["runtime_min"]
+        
+        for m in range(0, min(runtime_min, 60), 2):
+            shot = random.choice(shots)
+            theme = random.choice(themes)
+            
+            if "Exposition" in theme:
+                drops = random.randint(240, 750)
+                retention = round(max(35.0, 100.0 - (m * 1.1) - random.uniform(10, 25)), 1)
+            elif "Action" in theme or "Confrontation" in theme:
+                drops = random.randint(15, 80)
+                retention = round(max(70.0, 100.0 - (m * 0.3)), 1)
+            else:
+                drops = random.randint(80, 220)
+                retention = round(max(55.0, 100.0 - (m * 0.6)), 1)
+                
+            records.append({
+                "title": title,
+                "timeline_sec": m * 60,
+                "timeline_min": m,
+                "shot_type": shot,
+                "narrative_theme": theme,
+                "dialogue_density_wpm": random.randint(45, 180),
+                "viewer_drop_count": drops,
+                "retention_pct": retention
+            })
+    return pd.DataFrame(records)
+
+def generate_visual_cognition_stream():
+    """Engine 2: Screen-Space Visual Cognition Stream (Luminance, Entropy, Face Count)."""
+    records = []
+    for show in TITLES:
+        title = show["title"]
+        for sec in range(0, 3600, 120):
+            luminance_nits = round(random.uniform(15.0, 480.0), 1)  # Low nits = dark movie
+            contrast_ratio = round(random.uniform(250.0, 4500.0), 1)
+            color_entropy = round(random.uniform(2.1, 7.8), 2)
+            face_count = random.randint(0, 6)
+            
+            # Low luminance (<40 nits) on mobile screens causes high churn risk
+            mobile_churn_risk = round(random.uniform(0.65, 0.92), 2) if luminance_nits < 45 else round(random.uniform(0.08, 0.35), 2)
+            
+            records.append({
+                "title": title,
+                "timeline_sec": sec,
+                "luminance_nits": luminance_nits,
+                "contrast_ratio": contrast_ratio,
+                "color_entropy": color_entropy,
+                "active_face_count": face_count,
+                "mobile_churn_risk": mobile_churn_risk
+            })
+    return pd.DataFrame(records)
+
+def generate_perceptual_pacing_telemetry():
+    """Engine 3: Real-Time Perceptual Pacing & Audio Hash Pipeline."""
+    records = []
+    for show in TITLES:
+        title = show["title"]
+        for win in range(1, 31):
+            cuts_per_min = random.randint(6, 42)  # Fast action = 35+ cuts/min
+            audio_db_variance = round(random.uniform(8.0, 45.0), 1)
+            cdn_buffer_rate = round(random.uniform(0.1, 6.2), 2)
+            
+            # Fast cuts + high buffer = immediate viewer annoyance
+            bitrate_drop_flag = 1 if (cuts_per_min > 28 and cdn_buffer_rate > 3.0) else 0
+            
+            records.append({
+                "title": title,
+                "minute_window": win,
+                "cuts_per_minute": cuts_per_min,
+                "audio_db_variance": audio_db_variance,
+                "cdn_buffer_rate_pct": cdn_buffer_rate,
+                "bitrate_drop_flag": bitrate_drop_flag,
+                "pacing_stress_index": round((cuts_per_min * 0.15) + (cdn_buffer_rate * 1.8), 2)
+            })
+    return pd.DataFrame(records)
+
+def generate_theatrical_svod_elasticity():
+    """Engine 4: Theatrical vs SVOD Elasticity Simulation Matrix."""
+    records = [
+        {
+            "title": "CyberBlade 2099",
+            "budget_m": 165.0,
+            "projected_theatrical_gross_m": 420.0,
+            "theatrical_net_profit_m": 88.0,
+            "projected_svod_subs_gained_k": 450,
+            "svod_annual_value_m": 80.9,
+            "optimal_release_strategy": "45-Day Exclusive Theatrical Window -> Premium SVOD",
+            "hybrid_roi_score": 9.4
+        },
+        {
+            "title": "Kingdom of Sand",
+            "budget_m": 210.0,
+            "projected_theatrical_gross_m": 580.0,
+            "theatrical_net_profit_m": 125.0,
+            "projected_svod_subs_gained_k": 320,
+            "svod_annual_value_m": 57.5,
+            "optimal_release_strategy": "Global IMAX & 60-Day Theatrical Window",
+            "hybrid_roi_score": 9.8
+        },
+        {
+            "title": "The Shadow Protocol",
+            "budget_m": 80.0,
+            "projected_theatrical_gross_m": 110.0,
+            "theatrical_net_profit_m": -12.0,
+            "projected_svod_subs_gained_k": 890,
+            "svod_annual_value_m": 160.1,
+            "optimal_release_strategy": "Direct-to-SVOD Binge Global Drop (Bypass Theatrical)",
+            "hybrid_roi_score": 9.1
+        },
+        {
+            "title": "Neon Horizons: Season 2",
+            "budget_m": 95.0,
+            "projected_theatrical_gross_m": 0.0,
+            "theatrical_net_profit_m": 0.0,
+            "projected_svod_subs_gained_k": 1150,
+            "svod_annual_value_m": 206.8,
+            "optimal_release_strategy": "Weekly Episodic Global Streaming Drop",
+            "hybrid_roi_score": 9.6
+        },
+        {
+            "title": "Starlight Odyssey",
+            "budget_m": 120.0,
+            "projected_theatrical_gross_m": 180.0,
+            "theatrical_net_profit_m": 15.0,
+            "projected_svod_subs_gained_k": 620,
+            "svod_annual_value_m": 111.5,
+            "optimal_release_strategy": "Day-and-Date Hybrid Release (Theaters + SVOD Premiere)",
+            "hybrid_roi_score": 8.9
+        }
+    ]
     return pd.DataFrame(records)
