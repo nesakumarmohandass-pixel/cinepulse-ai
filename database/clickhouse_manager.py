@@ -35,6 +35,8 @@ class ClickHouseManager:
         self.mode = "in-memory"
         self.duck_conn = duckdb.connect(database=":memory:")
         
+        # Always pre-seed local fallback engine so failover is instant
+        self._seed_local_engine()
         self._init_connection()
 
     def _init_connection(self):
@@ -57,10 +59,9 @@ class ClickHouseManager:
                 print(f"[ClickHouse] Connection note: {e}. Defaulting to high-performance local analytical engine.")
         
         self.mode = "in-memory"
-        self._seed_local_engine()
 
     def _seed_local_engine(self):
-        """Pre-seeds all 8 core & proprietary tables into local engine."""
+        """Pre-seeds all 8 core & proprietary tables into local in-memory engine."""
         df_bo = generate_box_office_data(days=30)
         df_stream = generate_streaming_telemetry(num_sessions=3500)
         df_scenes = generate_scene_retention_data()
